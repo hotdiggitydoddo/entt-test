@@ -3,7 +3,6 @@
 
 #include <cstdint>
 #include <iostream>
-#include <string>
 #include <sstream>
 
 struct position {
@@ -49,11 +48,8 @@ int main(int argc, char* argv[])
 
 	SetTargetFPS(60);
 
-
 	entt::registry registry;
 	std::uint64_t dt = 16;
-
-	
 
 	for (auto i = 0; i < 10; ++i)
 	{
