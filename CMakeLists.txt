@@ -11,6 +11,6 @@ add_subdirectory(vendor/raylib)
 include_directories(vendor/entt/src)
 include_directories(vendor/raylib/src)
 
-add_executable(entt-test main.cpp)
+add_executable(entt-test src/main.cpp src/Engine/ResourceManager.h src/Engine/ResourceManager.cpp)
 
 target_link_libraries(entt-test raylib)

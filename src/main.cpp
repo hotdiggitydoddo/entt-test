@@ -5,6 +5,8 @@
 #include <iostream>
 #include <sstream>
 
+#include "Engine/ResourceManager.h"
+
 struct position {
 	float x;
 	float y;
@@ -23,19 +25,21 @@ void update(entt::registry &registry)
 	for (auto entity : view)
 	{
 		auto &vel = view.get<velocity>(entity);
-		vel.dx += .1f;
-		vel.dy += .2f;
+		vel.dx = .1f;
+		vel.dy = .2f;
 	}
-}
 
-void update(entt::registry &registry, std::uint64_t dt)
-{
-	registry.view<position, velocity>().each([dt](auto &pos, auto &vel)
+	registry.view<position, velocity>().each([](auto &pos, auto &vel)
 	{
-		pos.x += vel.dx * dt;
-		pos.y += vel.dy * dt;
+		pos.x += vel.dx;
+		pos.y += vel.dy;
 	});
 }
+//
+//void update(entt::registry &registry)
+//{
+//	
+//}
 
 int main(int argc, char* argv[])
 {
@@ -48,6 +52,8 @@ int main(int argc, char* argv[])
 
 	SetTargetFPS(60);
 
+	Texture2D* tex = ResourceManager::LoadTextureFromFile("blueball.png", "blueball");
+
 	entt::registry registry;
 	std::uint64_t dt = 16;
 
@@ -55,7 +61,7 @@ int main(int argc, char* argv[])
 	{
 		auto entity = registry.create();
 		registry.assign<position>(entity, i * 1.f, i * 1.f);
-		if (i % 2 == 0)
+		if (i == 0)
 		{
 			registry.assign<velocity>(entity, i * .5f, i * .5f);
 		}
@@ -72,7 +78,7 @@ int main(int argc, char* argv[])
 		// TODO: Update your variables here
 		//----------------------------------------------------------------------------------
 		update(registry);
-		update(registry, dt);
+		update(registry);
 		// Draw
 		//----------------------------------------------------------------------------------
 		BeginDrawing();
@@ -87,8 +93,11 @@ int main(int argc, char* argv[])
 			std::stringstream ss;
 			ss << "X: " << pos.x << " Y: " << pos.y << std::endl;
 			DrawText(ss.str().c_str(), 190, 100 + (entity * 30), 20, LIGHTGRAY);
+			DrawTextureEx(*tex, { pos.x, pos.y }, 0.0f, 1.0f, RAYWHITE);
 		}
 	
+		
+
 		EndDrawing();
 		//----------------------------------------------------------------------------------
 	}
@@ -97,7 +106,7 @@ int main(int argc, char* argv[])
 	//--------------------------------------------------------------------------------------
 	CloseWindow();        // Close window and OpenGL context
 	//--------------------------------------------------------------------------------------
-
+	tex = nullptr;
 	return 0;
 }
 
