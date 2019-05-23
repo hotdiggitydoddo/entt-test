@@ -17,6 +17,11 @@ struct velocity {
 	float dy;
 };
 
+struct sprite {
+	Texture2D* texture;
+	Rectangle sourceRect;
+	Color color;
+};
 
 void update(entt::registry &registry)
 {
@@ -57,15 +62,20 @@ int main(int argc, char* argv[])
 	entt::registry registry;
 	std::uint64_t dt = 16;
 
-	for (auto i = 0; i < 10; ++i)
+	/*for (auto i = 0; i < 10; ++i)
 	{
 		auto entity = registry.create();
 		registry.assign<position>(entity, i * 1.f, i * 1.f);
-		if (i == 0)
+		if (i % 2 = 0)
 		{
 			registry.assign<velocity>(entity, i * .5f, i * .5f);
 		}
-	}
+	}*/
+
+	auto entity = registry.create();
+	registry.assign<position>(entity, 100.0f, 100.0f);
+	registry.assign<velocity>(entity, 1.0f, 1.0f);
+	registry.assign<sprite>(entity, tex, Rectangle{ 1, 1, 1, 1 }, Color{ 255, 255, 255, 255 });
 
 
 	//--------------------------------------------------------------------------------------
@@ -85,7 +95,24 @@ int main(int argc, char* argv[])
 
 		ClearBackground(RAYWHITE);
 		
-		auto view = registry.view<position>();
+		auto view = registry.view<position, sprite>();
+
+		for (auto entity : view)
+		{
+			auto &pos = view.get<position>(entity);
+			auto &spr = view.get<sprite>(entity);
+
+			DrawTextureEx(*(spr.texture), { pos.x, pos.y }, 0.0f, 1.0f, spr.color);
+		}
+
+
+
+
+
+
+
+
+		/*auto view = registry.view<position>();
 		for (auto entity : view)
 		{
 			auto &pos = view.get(entity);
@@ -95,7 +122,7 @@ int main(int argc, char* argv[])
 			DrawText(ss.str().c_str(), 190, 100 + (entity * 30), 20, LIGHTGRAY);
 			DrawTextureEx(*tex, { pos.x, pos.y }, 0.0f, 1.0f, RAYWHITE);
 		}
-	
+	*/
 		
 
 		EndDrawing();
